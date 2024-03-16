@@ -13,17 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('seksis', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('type', ['admin', 'user'])->default('user');
-            $table->integer('change_pass')->default(0);
-            $table->integer('gagal_login')->default(0);
-            $table->dateTime('tanggal_gagal_login')->nullable();
-            $table->rememberToken();
+            $table->string('name')->default(null);
+            $table->integer('status')->default(1);
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
@@ -37,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('seksis');
     }
 };

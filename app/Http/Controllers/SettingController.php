@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 use App\Traits\Watzap;
@@ -30,6 +31,7 @@ class SettingController extends Controller
     public function index()
     {
         //
+        return view('settings.index')->with('settings', Setting::all());
     }
 
     /**
@@ -40,6 +42,7 @@ class SettingController extends Controller
     public function create()
     {
         //
+        return view('seksi.create');
     }
 
     /**
@@ -59,9 +62,10 @@ class SettingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Setting $setting)
     {
         //
+        return view('settings.detail')->with('setting', $setting);
     }
 
     /**
@@ -82,9 +86,36 @@ class SettingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Setting $setting)
     {
         //
+        $this->validate(
+            $request,
+            [
+                'key' => 'required',
+                'value' => 'required',
+                'desc' => 'required',
+            ],
+            [
+                'key.required' => 'Please input key, Thank You.',
+                'value.required' => 'Please Input value, Thank You.',
+                'desc.required' => 'Input Description, Thank You.',
+            ]
+        );
+        // dd($request->all());
+
+        $setting->update([
+            'key' => $request->key,
+            'value' => $request->value,
+            'description' => $request->desc,
+            'updated_by' => auth()->user()->id,
+        ]);
+        $setting->save();
+
+        session()->flash('message', ' setting was updated successfully.');
+        return redirect(route('settings.index'));
+
+
     }
 
     /**

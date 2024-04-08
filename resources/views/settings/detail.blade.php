@@ -31,12 +31,12 @@
 
 
 @section('content-title')
-    <h1 class="m-0">Create Seksi</h1>
+    <h1 class="m-0">Update Setting</h1>
 @endsection
 
 @section('content-breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('seksi.index') }}">Seksi</a></li>
-    <li class="breadcrumb-item active">Create</li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Setting</a></li>
+    <li class="breadcrumb-item active">Update</li>
 @endsection
 
 
@@ -49,19 +49,36 @@
             <h3 class="card-title"></h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('seksi.store') }}" method="post" id="createForm" enctype="multipart/form-data">
+            <form action="{{ route('settings.update', $setting->id) }}" method="post" id="createForm" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label>Nama Seksi*</label>
-                        <input type="text" class="form-control" name="name" placeholder="Seksi Name" value="{{ old('name') }}" required autofocus>
+                        <label>Key*</label>
+                        <input type="text" class="form-control" name="key" value="{{ $setting->key }}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Value*</label>
+                        <input type="text" class="form-control" name="value" value="{{ $setting->value }}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" name="desc" value="{{ $setting->description }}" required>
                     </div>
                 </div>
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </div>
             </form>
         </div>

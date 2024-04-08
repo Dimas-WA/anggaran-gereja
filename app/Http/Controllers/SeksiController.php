@@ -58,7 +58,7 @@ class SeksiController extends Controller
         $seksi->save();
 
         session()->flash('message', ' seksi was created successfully.');
-        return redirect(route('seksi.index'));
+        return redirect(route('seksi.create'));
 
 
     }

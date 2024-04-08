@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('master_anggarans', function (Blueprint $table) {
+        Schema::create('tahun_anggarans', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->default(null);
-            $table->double('saldo_awal', 15,2)->default(0.00);
-            $table->double('saldo_akhir', 15,2)->default(0.00);
-            $table->integer('status')->default(1);
-            $table->integer('tahun_anggaran_id')->nullable();
+            $table->integer('tahun')->default(2023);
+            $table->integer('status')->default(0);
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('master_anggarans');
+        Schema::dropIfExists('tahun_anggarans');
     }
 };

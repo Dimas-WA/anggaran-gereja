@@ -3,8 +3,12 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MasterAnggaranController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoutingApprovalController;
 use App\Http\Controllers\SeksiController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TahunAnggaranController;
+use App\Http\Controllers\TrxAnggaranDetailController;
+use App\Http\Controllers\TrxAnggaranHeaderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,9 +61,17 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('seksi', SeksiController::class);
 
+    Route::resource('tahun-anggaran', TahunAnggaranController::class);
     Route::resource('master-anggaran', MasterAnggaranController::class);
+    Route::resource('trx-anggaran', TrxAnggaranHeaderController::class);
+
+    Route::get('send-trx-anggaran/{id}', [TrxAnggaranHeaderController::class, 'send'])->name('trx-anggaran.send');
+
+    Route::post('add-trx-anggaran-detail', [TrxAnggaranHeaderController::class, 'add_trx_anggaran_detail'])->name('trx-anggaran.add');
+    Route::get('delete-trx-anggaran-detail/{id}', [TrxAnggaranDetailController::class, 'delete'])->name('trx-anggaran-detail.delete');
 
     Route::resource('settings', SettingController::class);
+    Route::resource('routing-approvals', RoutingApprovalController::class);
 
 });
 

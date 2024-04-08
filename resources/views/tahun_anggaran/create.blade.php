@@ -31,11 +31,11 @@
 
 
 @section('content-title')
-    <h1 class="m-0">Create Seksi</h1>
+    <h1 class="m-0 text-info">Create Tahun Anggaran</h1>
 @endsection
 
 @section('content-breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('seksi.index') }}">Seksi</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('tahun-anggaran.index') }}">Tahun Anggaran</a></li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
 
@@ -44,24 +44,36 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card card-primary">
-        <div class="card-header">
+        <div class="card card-info">
+        <div class="card-header" style="opacity: 0.8;">
             <h3 class="card-title"></h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('seksi.store') }}" method="post" id="createForm" enctype="multipart/form-data">
+            <form action="{{ route('tahun-anggaran.store') }}" method="post" id="createForm"  enctype="multipart/form-data">
             @csrf
+
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="form-group">
-                        <label>Nama Seksi*</label>
-                        <input type="text" class="form-control" name="name" placeholder="Seksi Name" value="{{ old('name') }}" required autofocus>
+                        <label>Tahun*</label>
+                        <input type="text" class="form-control" name="tahun" placeholder="Tahun Anggran" value="{{ old('tahun') }}" required>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-6">
 
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="form-control" name="status">
+                            <option value="1" style="background-color: #339a74; color: white;">Aktif</option>
+                            <option value="0" style="background-color: #9a3333; color: white;">Tidak Aktif</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-info">Submit</button>
             </div>
             </form>
         </div>
@@ -78,6 +90,7 @@
 <script src="{{ asset('AdminLTE/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
 <script src="https://cdn.ckeditor.com/4.21.0/basic/ckeditor.js"></script>
+<script src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 
 
 <!-- Select2 -->
@@ -102,10 +115,30 @@
     ]
     });
 </script>
+<script>
+    $("#time").inputmask("hh:mm", {
+      placeholder: "HH:MM",
+      insertMode: false,
+      showMaskOnHover: false,
+      alias: "datetime",
+      hourFormat: 24
+     }
+    );
 
+    $("#time_awal").inputmask("hh:mm", {
+      placeholder: "HH:MM",
+      insertMode: false,
+      showMaskOnHover: false,
+      alias: "datetime",
+      hourFormat: 24
+     }
+    );
+</script>
 <script>
     $('#date').datepicker({
-        startDate: new Date(),
+        format: 'yyyy-mm-dd'
+    });
+    $('#date_akhir').datepicker({
         format: 'yyyy-mm-dd'
     });
 </script>
@@ -114,5 +147,41 @@
     //Initialize Select2 Elements
     $('.select2').select2()
   });
+
+    //Date picker
+    $('#reservationdate').datetimepicker({
+        format: 'L'
+    });
 </script>
+
+
+<script>
+    function funcSelectType() {
+      var x = document.getElementById("jenis_bisnis_source").value;
+      var formLeasing = document.getElementById("leasing");
+      var formNonLeasing = document.getElementById("non_leasing");
+    //   var formMatch = document.getElementById("typeMatch");
+
+    if (x == "leasing") {
+        console.log(x);
+        formLeasing.style.display = "block";
+        formNonLeasing.style.display = "none";
+        // formSeries.style.display = "none";
+        // formMatch.style.display = "none";
+    }
+    else if (x == "non_leasing") {
+        console.log(x);
+        formLeasing.style.display = "none";
+        formNonLeasing.style.display = "block";
+
+    }
+
+        else {
+        formLeasing.style.display = "none";
+        formNonLeasing.style.display = "none";
+
+        }
+    }
+</script>
+
 @endsection

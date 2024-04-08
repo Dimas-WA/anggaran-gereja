@@ -31,11 +31,11 @@
 
 
 @section('content-title')
-    <h1 class="m-0">Create Seksi</h1>
+    <h1 class="m-0">Create Setting</h1>
 @endsection
 
 @section('content-breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('seksi.index') }}">Seksi</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Setting</a></li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
 
@@ -49,13 +49,29 @@
             <h3 class="card-title"></h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('seksi.store') }}" method="post" id="createForm" enctype="multipart/form-data">
+            <form action="{{ route('settings.store') }}" method="post" id="createForm" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label>Nama Seksi*</label>
-                        <input type="text" class="form-control" name="name" placeholder="Seksi Name" value="{{ old('name') }}" required autofocus>
+                        <label>Key*</label>
+                        <input type="text" class="form-control" name="key" placeholder="Key Name" value="{{ old('key') }}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Value*</label>
+                        <input type="text" class="form-control" name="value" placeholder="Value" value="{{ old('value') }}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" name="desc" placeholder="Description" value="{{ old('desc') }}" required>
                     </div>
                 </div>
             </div>

@@ -65,8 +65,33 @@
               </a>
             </li>
 
+            @if (auth()->user()->type == 'user')
+            <li class="nav-header">Transaksi</li>
 
-
+            <li class="nav-item @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'trx-anggaran.index') menu-open @endif">
+                <a href="#" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'seksi.index') active @endif">
+                  <i class="nav-icon fa fa-shopping-bag text-warning"></i>
+                  <p>
+                    Permintaan Anggaran
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('trx-anggaran.create') }}" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.create') active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>New</p>
+                        </a>
+                    </li>
+                  <li class="nav-item">
+                    <a href="{{ route('trx-anggaran.index') }}" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.index') active @endif">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>View</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+        @endif
         @if (auth()->user()->type == 'admin')
           <li class="nav-header">Admin</li>
           <li class="nav-item @if (Route::currentRouteName() == 'master-anggaran.create' || Route::currentRouteName() == 'master-anggaran.index' || Route::currentRouteName() == 'master-anggaran.index') menu-open @endif">
@@ -86,6 +111,29 @@
                 </li>
               <li class="nav-item">
                 <a href="{{ route('master-anggaran.index') }}" class="nav-link @if (Route::currentRouteName() == 'master-anggaran.index') active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item @if (Route::currentRouteName() == 'tahun-anggaran.create' || Route::currentRouteName() == 'tahun-anggaran.index' || Route::currentRouteName() == 'tahun-anggaran.index') menu-open @endif">
+            <a href="#" class="nav-link @if (Route::currentRouteName() == 'tahun-anggaran.create' || Route::currentRouteName() == 'tahun-anggaran.index' || Route::currentRouteName() == 'seksi.index') active @endif">
+              <i class="nav-icon fas fa-money-check-alt text-warning"></i>
+              <p>
+                Tahun Anggaran
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('tahun-anggaran.create') }}" class="nav-link @if (Route::currentRouteName() == 'tahun-anggaran.create') active @endif">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>New</p>
+                    </a>
+                </li>
+              <li class="nav-item">
+                <a href="{{ route('tahun-anggaran.index') }}" class="nav-link @if (Route::currentRouteName() == 'tahun-anggaran.index') active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>View</p>
                 </a>
@@ -172,8 +220,33 @@
             </ul>
           </li>
 
-          <li class="nav-item @if (Route::currentRouteName() == 'settings.create' || Route::currentRouteName() == 'settings.index' || Route::currentRouteName() == 'settings.index') menu-open @endif">
-            <a href="#" class="nav-link @if (Route::currentRouteName() == 'settings.create' || Route::currentRouteName() == 'settings.index' || Route::currentRouteName() == 'settings.index') active @endif">
+          <li class="nav-item @if (Route::currentRouteName() == 'routing-approvals.create' || Route::currentRouteName() == 'routing-approvals.index' || Route::currentRouteName() == 'routing-approvals.pending') menu-open @endif">
+            <a href="#" class="nav-link @if (Route::currentRouteName() == 'routing-approvals.create' || Route::currentRouteName() == 'routing-approvals.index') active @endif">
+              <i class="nav-icon fas fa-cogs text-warning"></i>
+              <p>
+                Routing Approval
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              {{-- @if (Auth::user()->type == 'partner' || Auth::user()->type == 'business_owner') --}}
+                <li class="nav-item">
+                    <a href="{{ route('routing-approvals.create') }}" class="nav-link @if (Route::currentRouteName() == 'routing-approvals.create') active @endif">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Create</p>
+                    </a>
+                </li>
+              {{-- @endif --}}
+              <li class="nav-item">
+                <a href="{{ route('routing-approvals.index') }}" class="nav-link @if (Route::currentRouteName() == 'routing-approvals.index') active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item @if (Route::currentRouteName() == 'settings.index' || Route::currentRouteName() == 'settings.index') menu-open @endif">
+            <a href="#" class="nav-link @if (Route::currentRouteName() == 'settings.index' || Route::currentRouteName() == 'settings.index') active @endif">
               <i class="nav-icon fas fa-cogs text-warning"></i>
               <p>
                 Settings
@@ -181,12 +254,12 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('settings.create') }}" class="nav-link @if (Route::currentRouteName() == 'settings.create') active @endif">
                     <i class="far fa-circle nav-icon"></i>
                     <p>New</p>
                     </a>
-                </li>
+                </li> --}}
               <li class="nav-item">
                 <a href="{{ route('settings.index') }}" class="nav-link @if (Route::currentRouteName() == 'settings.index') active @endif">
                   <i class="far fa-circle nav-icon"></i>

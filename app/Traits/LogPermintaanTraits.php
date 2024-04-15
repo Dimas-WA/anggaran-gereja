@@ -61,7 +61,8 @@ trait LogPermintaanTraits
         $logTrx->save();
     }
 
-    function insertLogApp($trx_anggaran_header_id,$master_anggaran_id,$seksi_id,$tahun,$keterangan)
+
+    function insertLogAddDetailRealisasi($trx_anggaran_header_id,$master_anggaran_id,$seksi_id,$tahun,$keterangan)
     {
         $logTrx = new LogTrxAnggaran([
 
@@ -69,6 +70,54 @@ trait LogPermintaanTraits
             'master_anggaran_id' => $master_anggaran_id,
             'user_id' => auth()->user()->id,
             'seksi_id' => $seksi_id,
+            'tahun' => $tahun,
+            'status' => 'add_detail_realisasi',
+            'status_user_id' => auth()->user()->id,
+            'keterangan' => $keterangan,
+            'created_by' => auth()->user()->id
+        ]);
+        $logTrx->save();
+    }
+
+    function insertLogSend($trx_anggaran_header_id,$seksi_id,$tahun,$keterangan)
+    {
+        $logTrx = new LogTrxAnggaran([
+
+            'trx_anggaran_header_id' => $trx_anggaran_header_id,
+            'user_id' => auth()->user()->id,
+            'seksi_id' => $seksi_id,
+            'tahun' => $tahun,
+            'status' => 'send',
+            'status_user_id' => auth()->user()->id,
+            'keterangan' => $keterangan,
+            'created_by' => auth()->user()->id
+        ]);
+        $logTrx->save();
+    }
+    function insertLogSendRealisasi($trx_anggaran_header_id,$seksi_id,$tahun,$keterangan)
+    {
+        $logTrx = new LogTrxAnggaran([
+
+            'trx_anggaran_header_id' => $trx_anggaran_header_id,
+            'user_id' => auth()->user()->id,
+            'seksi_id' => $seksi_id,
+            'tahun' => $tahun,
+            'status' => 'send_realisasi',
+            'status_user_id' => auth()->user()->id,
+            'keterangan' => $keterangan,
+            'created_by' => auth()->user()->id
+        ]);
+        $logTrx->save();
+    }
+
+    function insertLogApp($trx_anggaran_header_id,$master_anggaran_id,$tahun,$keterangan)
+    {
+        $logTrx = new LogTrxAnggaran([
+
+            'trx_anggaran_header_id' => $trx_anggaran_header_id,
+            'master_anggaran_id' => $master_anggaran_id,
+            'user_id' => auth()->user()->id,
+            'seksi_id' => auth()->user()->profile->seksi_id,
             'tahun' => $tahun,
             'status' => 'approved',
             'status_user_id' => auth()->user()->id,

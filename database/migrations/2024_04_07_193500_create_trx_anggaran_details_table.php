@@ -21,6 +21,11 @@ return new class extends Migration
             $table->integer('master_anggaran_id')->nullable();
             $table->double('jumlah', 15,2)->default(0.00);
             $table->string('keterangan')->nullable();
+            $table->double('jumlah_realisasi', 15,2)->default(0.00);
+            $table->string('keterangan_realisasi')->nullable();
+            $table->enum('status_realisasi', ['none','draft','send','waiting-approval', 'on-process','rejected','finish'])->default('none');
+            $table->string('doc_realisasi')->nullable();
+            $table->string('original_file_realisasi')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

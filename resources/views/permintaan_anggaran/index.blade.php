@@ -18,7 +18,9 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body table-responsive p-4">
-          <table id="example1" class="table table-striped table-hover dataTable no-footer dtr-inline">
+
+            <table id="example2" class="table table-head-fixed text-nowrap">
+                {{-- <table id="example2" class="table table-striped table-hover dataTable no-footer dtr-inline"> --}}
             <thead>
                 <tr>
                     <th>#</th>
@@ -58,8 +60,12 @@
                             </td>
                             <td>
                                 <a class="btn btn-primary btn-xs" href="{{ route('trx-anggaran.show', $h_anggaran->id) }}" id="submit-btn"><i class="fas fa-search"></i> Review</a>
-                                {{-- <a class="btn btn-success btn-xs" href="{{ route('export.excel', $h_anggaran->id) }}" id="submit-btn"><i class="fas fa-file-excel"></i> Excel</a> --}}
-                                {{-- <a class="btn btn-danger btn-xs" href="{{ route('e-expense.delete', $h_anggaran->id) }}" id="submit-btn"><i class="fas fa-trash"></i> Delete</a> --}}
+                                @if ($h_anggaran->position == 0)
+                                    <a class="btn btn-success btn-xs text-white" href="{{ route('trx-anggaran.send', $h_anggaran->id) }}"><i class="fas fa-plane"></i> Send</a>
+                                @endif
+                                @if ($h_anggaran->position == 9999)
+                                    <a class="btn btn-warning btn-xs" href="{{ route('trx-anggaran.realisasi', $h_anggaran->id) }}"><i class="fas fa-edit"></i> Realisasi</a>
+                                @endif
                             </td>
                             {{-- <td>
                                 RP20230000{{$loop->iteration}}
@@ -144,18 +150,19 @@
 <script src="{{ asset('AdminLTE/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
 <script>
     $(function () {
-      $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    //   $("#example1").DataTable({
+    //     "responsive": true, "lengthChange": false, "autoWidth": false,
+    //     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    //   }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
       $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
+        // "paging": true,
+        // "lengthChange": false,
+        // "searching": true,
+        // "ordering": true,
+        // "info": true,
+        // "autoWidth": false,
+        // "responsive": true,
+        "scrollX": true,
       });
     });
   </script>

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NotifWA;
 use App\Models\MasterAnggaran;
+use App\Models\Profile;
+use App\Models\RoutingApproval;
 use App\Models\TahunAnggaran;
 use App\Models\TrxAnggaranDetail;
 use App\Models\TrxAnggaranHeader;
@@ -15,6 +18,17 @@ use Illuminate\Http\Request;
 class TrxAnggaranHeaderController extends Controller
 {
     use Watzap, EmailTraits, LogPermintaanTraits;
+
+    public function greeting(){
+
+        $timeOfDay = date('a');
+        if($timeOfDay == 'am'){
+            return 'Selamat pagi ';
+        }else{
+            return 'Selamat sore ';
+        }
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,6 +39,16 @@ class TrxAnggaranHeaderController extends Controller
         //
         return view('permintaan_anggaran.index')
         ->with('anggarans', TrxAnggaranHeader::where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->get())
+        ;
+    }
+
+    public function request_app()
+    {
+        //
+        //cek status
+
+        return view('permintaan_anggaran.request')
+        ->with('anggarans', TrxAnggaranHeader::where('position', auth()->user()->id)->orderBy('id', 'DESC')->get())
         ;
     }
 
@@ -111,8 +135,11 @@ class TrxAnggaranHeaderController extends Controller
      */
     public function show(TrxAnggaranHeader $trx_anggaran)
     {
-        //
-        // dd($trx_anggaran);
+
+        //set status masih perlu app atau tidak
+
+
+
         return view('permintaan_anggaran.detail')
         ->with('anggarans', MasterAnggaran::all())
         // ->with('anggaran_details', TrxAnggaranDetail::where('trx_anggaran_header'))
@@ -142,15 +169,6 @@ class TrxAnggaranHeaderController extends Controller
         );
         // dd($request->all());
 
-
-        // $table->integer('user_id')->nullable();
-        // $table->integer('seksi_id')->nullable();
-        // $table->integer('trx_anggaran_header_id')->nullable();
-        // $table->integer('master_anggaran_id')->nullable();
-        // $table->double('jumlah', 15,2)->default(0.00);
-        // $table->integer('created_by')->nullable();
-
-
         $trxDetail = new TrxAnggaranDetail([
             'user_id' => $request->user_id,
             'seksi_id' => $request->seksi_id,
@@ -170,7 +188,9 @@ class TrxAnggaranHeaderController extends Controller
         ]);
         $header->save();
 
+        $this->insertLogAddDetail($request->header,$request->anggaran_id,$request->seksi_id,$request->tahun,$request->jumlah);
 
+        session()->flash('message', 'Detail Anggaran berhasil ditambahkan.');
         return redirect(route('trx-anggaran.show', $request->header));
     }
 
@@ -211,11 +231,341 @@ class TrxAnggaranHeaderController extends Controller
 
     public function send(Request $request)
     {
+
         // dd($request->id);
         $header = TrxAnggaranHeader::find($request->id);
         $vH=TrxAnggaranDetail::where('trx_anggaran_header_id', $header->id)->get();
 
-        dump($vH);
-        dd($header);
+        //cek next position on routing approval
+
+        try {
+            //code...
+            $cekRA = RoutingApproval::where('user_id', $header->user_id)->firstOrFail();
+
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            session()->flash('message', 'Belum ada routing approval, kontak admin untuk dibuatkan.');
+            return redirect(route('trx-anggaran.show', $header->id));
+        }
+
+        $nP = $header->next_position; //get id untuk app
+
+        // dd($header->user->profile->name);
+
+        if ($header->next_position == 'user_id_app_2') {
+            # code...
+            $nextPosition = 'user_id_app_3';
+        } elseif ($header->next_position == 'user_id_app_3') {
+            # code...
+            $nextPosition = 'user_id_app_4';
+        } elseif ($header->next_position == 'user_id_app_4') {
+            # code...
+            $nextPosition = 'user_id_app_5';
+        } elseif ($header->next_position == 'user_id_app_5') {
+            # code...
+            $nextPosition = 'user_id_app_6';
+        } elseif ($header->next_position == 'user_id_app_6') {
+            # code...
+            $nextPosition = 'user_id_app_7';
+        } elseif ($header->next_position == 'user_id_app_7') {
+            # code...
+            $nextPosition = 'user_id_app_8';
+        } elseif ($header->next_position == 'user_id_app_8') {
+            # code...
+            $nextPosition = 'user_id_app_9';
+        } elseif ($header->next_position == 'user_id_app_9') {
+            # code...
+            $nextPosition = '-';
+        }
+
+        $header->update([
+            'status' => 'send',
+            'position' => $cekRA->$nP,
+            'next_position' => $nextPosition,
+        ]);
+
+        $header->save();
+
+
+        // insert to log permintaan status send
+
+        $getAppName = Profile::where('user_id', $cekRA->$nP)->first();
+        $this->insertLogSend($header->id,$header->seksi_id,$header->tahun,'kirim permintaan approval ke '.$getAppName->name);
+
+
+        // kirim notifnya wa dulu
+        // get detail pos
+
+        //send wa job queue
+
+//         $pesanDetail = '';
+//         $no = 1;
+//         foreach ($vH as $detail) {
+// $pesanDetail .= $no.'. '.$detail->master_anggaran->name.' '.$detail->keterangan.' '.$detail->jumlah.'
+// ';
+//             $no++;
+//         }
+
+        $userId = $header->user_id;
+
+
+$mUser = $this->greeting().'[NAME]. anda telah mengirim permintaan untuk persetujuan permintaan anggaran kepada '.$getAppName->name.'.';
+
+$job_User = new NotifWA($mUser,null,$userId,null);
+NotifWA::dispatch($mUser,null,$userId,null);
+
+$mApp = $this->greeting().'[NAME]. '.$header->user->profile->name.' - '.$header->seksi->name.' telah mengajukan permintaan persetujuan permintaan anggaran kepada anda. Untuk detailnya bisa dicek di aplikasi Anggaran Gereja, terimakasih.';
+
+$job_App = new NotifWA($mApp,null,$cekRA->$nP,null);
+NotifWA::dispatch($mApp,null,$cekRA->$nP,null);
+
+// $mData = 'Menunjuk Program kerja tahun : '.$header->tahun.' seksi  : '.$header->seksi->name.' Mengajukan Permohonan Permintaan Anggaran dengan tujuan '.$header->description.
+// 'Dengan rincian anggaran sebagai berikut :'.
+// $pesanDetail.' '.
+// 'Yang menyerahkan
+// '.$header->user->profile->name
+// ;
+
+// $message = $this->greeting().'[NAME].
+// '.$mData;
+
+
+    session()->flash('message', ' Permintaan Anggaran sudah dikirim.');
+    return redirect(route('trx-anggaran.index'));
+
     }
+
+
+
+    public function approve_reject (Request $request)
+    {
+        // dd($request->all());
+        $this->validate(
+            $request,
+            [
+                'notes' => 'required',
+                'action' => 'required|not_in:0',
+            ],
+            [
+                'notes.required' => 'Input catatan, Thank You.',
+                'action.required' => 'Pilih setuju atau tolak, Thank You.',
+            ]
+        );
+
+        // dd($request->id);
+        $header = TrxAnggaranHeader::find($request->header);
+        $vH=TrxAnggaranDetail::where('trx_anggaran_header_id', $header->id)->get();
+        $pengaprove = $header->position;
+        $waAppSebelumya = $header->next_position;
+        //cek next position on routing approval
+        // dd($header->next_position);
+        try {
+            //code...
+            $cekRA = RoutingApproval::where('user_id', $header->user_id)->firstOrFail();
+
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            session()->flash('message', 'Belum ada routing approval, kontak admin untuk dibuatkan.');
+            return redirect(route('trx-anggaran.show', $header->id));
+        }
+
+        $nP = $header->next_position; //get id untuk app
+
+        if ($header->next_position == 'user_id_app_2') {
+            # code...
+            $nextPosition = 'user_id_app_3';
+        } elseif ($header->next_position == 'user_id_app_3') {
+            # code...
+            $nextPosition = 'user_id_app_4';
+        } elseif ($header->next_position == 'user_id_app_4') {
+            # code...
+            $nextPosition = 'user_id_app_5';
+        } elseif ($header->next_position == 'user_id_app_5') {
+            # code...
+            $nextPosition = 'user_id_app_6';
+        } elseif ($header->next_position == 'user_id_app_6') {
+            # code...
+            $nextPosition = 'user_id_app_7';
+        } elseif ($header->next_position == 'user_id_app_7') {
+            # code...
+            $nextPosition = 'user_id_app_8';
+        } elseif ($header->next_position == 'user_id_app_8') {
+            # code...
+            $nextPosition = 'user_id_app_9';
+        } elseif ($header->next_position == 'user_id_app_9') {
+            # code...
+            $nextPosition = '-';
+        }
+
+        // dump('next id approval '.$cekRA->$nP);
+        // dump('next posisi field table '.$nextPosition);
+        // $getAppName = Profile::where('user_id', $cekRA->$nP)->first();
+        // dd($getAppName->name);
+
+        if ($request->action == 'app') {
+
+            if ($cekRA->$nP == 0) {
+                # code...
+
+                $header->update([
+                    'status' => 'approved',
+                    'position' => 9999,
+                    'next_position' => 9999,
+                    'updated_by' => auth()->user()->id,
+                ]);
+
+                // $header->save();
+
+                $getAppName = Profile::where('user_id', $cekRA->$nP)->first();
+                // $this->insertLogApp($header->id,0,$header->tahun,'approved permintaan anggaran');
+
+                $mUser = $this->greeting().'[NAME]. permintaan anggaran telah di approve oleh '.auth()->user()->profile->name;
+
+                $mUserLasApp = $this->greeting().'[NAME]. permintaan anggaran '.$header->user->profile->name.' - '.$header->seksi->name.' telah di approve oleh '.auth()->user()->profile->name;
+
+            }
+            else {
+                # code...
+                $header->update([
+                    'status' => 'waiting-approval',
+                    'position' => $cekRA->$nP,
+                    'next_position' => $nextPosition,
+                    'updated_by' => auth()->user()->id,
+                ]);
+
+                // $header->save();
+
+                $getAppName = Profile::where('user_id', $cekRA->$nP)->first();
+                $this->insertLogApp($header->id,0,$header->tahun,'approved dan meneruskan permintaan approval ke '.$getAppName->name);
+
+                $mUser = $this->greeting().'[NAME]. permintaan anggaran telah di approve oleh '.auth()->user()->profile->name.'. dan sedang diteruskan ke '.$getAppName->name;
+
+                $mUserLasApp = $this->greeting().'[NAME]. permintaan anggaran '.$header->user->profile->name.' - '.$header->seksi->name.' telah di approve oleh '.auth()->user()->profile->name.'. dan sedang diteruskan ke '.$getAppName->name;
+            }
+
+        $userId = $header->user_id;
+
+    $job_User = new NotifWA($mUser,null,$userId,null);
+    NotifWA::dispatch($mUser,null,$userId,null);
+
+    // dd($header->next_position);
+    if ($waAppSebelumya =='user_id_app_4') {
+        # code...
+// dd($mUser);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_2,null);
+
+    } elseif ($waAppSebelumya =='user_id_app_5') {
+        # code...
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_3,null);
+    } elseif ($waAppSebelumya =='user_id_app_6') {
+        # code...
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_4,null);
+    } elseif ($waAppSebelumya =='user_id_app_7') {
+        # code...
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        $job_Ujob_UserAppser = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_5,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_5,null);
+    } elseif ($waAppSebelumya =='user_id_app_8') {
+        # code...
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_5,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_5,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_6,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_6,null);
+    } elseif ($waAppSebelumya =='user_id_app_9') {
+        # code...
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_2,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_3,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_4,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_5,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_5,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_6,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_6,null);
+        $job_UserApp = new NotifWA($mUserLasApp,null,$cekRA->user_id_app_7,null);
+        NotifWA::dispatch($mUserLasApp,null,$cekRA->user_id_app_7,null);
+    }
+
+// dd('stop');
+
+
+$mApp1 = $this->greeting().'[NAME]. Anda telah menyetujui permintaan anggaran dari '.$header->user->profile->name.' - '.$header->seksi->name;
+
+    $job_App = new NotifWA($mApp1,null,$pengaprove,null);
+    NotifWA::dispatch($mApp1,null,$pengaprove,null);
+
+
+
+            if ($cekRA->$nP != 0) {
+    # code...
+$mApp = $this->greeting().'[NAME]. '.auth()->user()->profile->name.' telah menyetujui permintaan anggaran dari '.$header->user->profile->name.' - '.$header->seksi->name.'. dan telah meneruskan permintaan persetujuan kepada anda. Untuk detailnya bisa dicek di aplikasi Anggaran Gereja, terimakasih.';
+
+        $job_Next = new NotifWA($mApp,null,$cekRA->$nP,null);
+        NotifWA::dispatch($mApp,null,$cekRA->$nP,null);
+
+            }
+            session()->flash('message', ' Permintaan Anggaran sudah dikirim.');
+
+        } elseif ($request->action == 'rej') {
+            # code...
+
+            $header->update([
+                'status' => 'draft',
+                'position' => 0,
+                'next_position' => 'user_id_app_2',
+                'updated_by' => auth()->user()->id,
+            ]);
+
+            $header->save();
+
+            // $getAppName = Profile::where('user_id', $cekRA->$nP)->first();
+            $this->insertLogSend($header->id,$header->seksi_id,$header->tahun,'permintaan anggaran anda telah ditolak oleh '.auth()->user()->profile->name);
+
+            $userId = $header->user_id;
+
+            $mUser = $this->greeting().'[NAME]. permintaan anggaran telah ditolak oleh '.auth()->user()->profile->name;
+
+            $job_User = new NotifWA($mUser,null,$userId,null);
+            NotifWA::dispatch($mUser,null,$userId,null);
+
+            $mApp1 = $this->greeting().'[NAME]. Anda telah menolak permintaan anggaran dari '.$header->user->profile->name.' - '.$header->seksi->name;
+
+            $job_App = new NotifWA($mApp1,null,$pengaprove,null);
+            NotifWA::dispatch($mApp1,null,$pengaprove,null);
+
+            session()->flash('message', ' Permintaan Anggaran sudah ditolak.');
+        }
+
+
+
+
+
+        return redirect(route('trx-anggaran.index'));
+
+    }
+
+
 }

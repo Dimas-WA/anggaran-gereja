@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use App\Models\Seksi;
 use App\Models\User;
+use App\Models\UserContact;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
@@ -93,6 +94,15 @@ class ProfileController extends Controller
 
         $profile->save();
 
+        $userContact = new UserContact([
+            'user_id' => $user->id,
+            'name' => $request->name,
+            'phone' => $request->no_hp,
+            'email' => $request->email,
+            'created_by' => auth()->user()->id,
+        ]);
+
+        $userContact->save();
 
         session()->flash('message', ' profile & user was created successfully.');
         return redirect(route('profiles.index'));

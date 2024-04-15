@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\TrxAnggaranDetail;
 use App\Models\TrxAnggaranHeader;
+use App\Traits\LogPermintaanTraits;
 use Illuminate\Http\Request;
 
 class TrxAnggaranDetailController extends Controller
 {
+    use LogPermintaanTraits;
     /**
      * Display a listing of the resource.
      *
@@ -92,9 +94,6 @@ class TrxAnggaranDetailController extends Controller
         $id_header = $vH->trx_anggaran_header_id;
         $jml = $vH->jumlah;
 
-        $vH->delete();
-
-
         $header = TrxAnggaranHeader::find($id_header);
         $total = $header->total_pengajuan;
         $total = $total - $jml;
@@ -102,6 +101,10 @@ class TrxAnggaranDetailController extends Controller
             'total_pengajuan' => $total,
         ]);
         $header->save();
+
+        $this->insertLogRemoveDetail($header->id,$request->id,$header->seksi_id,$header->tahun,$vH->jumlah);
+
+        $vH->delete();
 
         session()->flash('message', ' Permintaan Anggaran was updated successfully.');
 

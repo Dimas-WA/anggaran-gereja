@@ -32,10 +32,10 @@
    </style>
 
 @endsection
-<aside class="main-sidebar sidebar-dark-lightblue elevation-4" style="background-color: #00728f">
+<aside class="main-sidebar sidebar-dark-lightblue elevation-4" style="background-color: #5d5d5d">
     <!-- Brand Logo -->
-    <a href="#" class="brand-link" style="background-color: #00728f">
-      <img src="{{ asset('AdminLTE/dist/img/aaui-logo.png') }}" alt="AAUI Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="#" class="brand-link" style="background-color: #5d5d5d">
+      <img src="{{ asset('AdminLTE/dist/img/gbkp-logo.png') }}" alt="GBKP Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"> APP</span>
     </a>
 
@@ -68,8 +68,8 @@
             @if (auth()->user()->type == 'user')
             <li class="nav-header">Transaksi</li>
 
-            <li class="nav-item @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'trx-anggaran.index') menu-open @endif">
-                <a href="#" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'seksi.index') active @endif">
+            <li class="nav-item @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'trx-anggaran.req' || Route::currentRouteName() == 'trx-anggaran-realisasi.req') menu-open @endif">
+                <a href="#" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'trx-anggaran.req' || Route::currentRouteName() == 'trx-anggaran-realisasi.req') active @endif">
                   <i class="nav-icon fa fa-shopping-bag text-warning"></i>
                   <p>
                     Permintaan Anggaran
@@ -83,12 +83,29 @@
                         <p>New</p>
                         </a>
                     </li>
-                  <li class="nav-item">
-                    <a href="{{ route('trx-anggaran.index') }}" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.index') active @endif">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>View</p>
-                    </a>
-                  </li>
+                    <li class="nav-item">
+                      <a href="{{ route('trx-anggaran.index') }}" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.index') active @endif">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>View</p>
+                      </a>
+                    </li>
+
+                    @if (auth()->user()->profile->seksi->is_parent != 0)
+
+                        <li class="nav-item">
+                            <a href="{{ route('trx-anggaran.req') }}" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.req') active @endif">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Persetujuan Permintaan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('trx-anggaran-realisasi.req') }}" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran-realisasi.req') active @endif">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Persetujuan Realisasi</p>
+                            </a>
+                        </li>
+                    @endif
+
                 </ul>
               </li>
         @endif

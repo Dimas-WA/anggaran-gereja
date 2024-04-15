@@ -9,6 +9,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TahunAnggaranController;
 use App\Http\Controllers\TrxAnggaranDetailController;
 use App\Http\Controllers\TrxAnggaranHeaderController;
+use App\Http\Controllers\TrxRealisasiAnggaranHeaderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,9 +65,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('tahun-anggaran', TahunAnggaranController::class);
     Route::resource('master-anggaran', MasterAnggaranController::class);
     Route::resource('trx-anggaran', TrxAnggaranHeaderController::class);
+    Route::get('trx-anggaran-request', [TrxAnggaranHeaderController::class, 'request_app'])->name('trx-anggaran.req');
 
     Route::get('send-trx-anggaran/{id}', [TrxAnggaranHeaderController::class, 'send'])->name('trx-anggaran.send');
-
+    Route::post('app_rej-trx-anggaran', [TrxAnggaranHeaderController::class, 'approve_reject'])->name('trx-anggaran.app_rej');
+    Route::get('realisasi-trx-anggaran/{id}', [TrxRealisasiAnggaranHeaderController::class, 'realisasi'])->name('trx-anggaran.realisasi');
+    Route::post('add_realisasi-trx-anggaran', [TrxRealisasiAnggaranHeaderController::class, 'add_realisasi'])->name('trx-anggaran.add_realisasi');
+    Route::get('send-realisasi-trx-anggaran/{id}', [TrxRealisasiAnggaranHeaderController::class, 'send_realisasi'])->name('trx-anggaran.send_realisasi');
+    Route::get('trx-anggaran-realisasi-request', [TrxRealisasiAnggaranHeaderController::class, 'request_app'])->name('trx-anggaran-realisasi.req');
+    Route::post('app_rej-trx-anggaran-realisasi', [TrxRealisasiAnggaranHeaderController::class, 'approve_reject'])->name('trx-anggaran-realisasi.app_rej');
     Route::post('add-trx-anggaran-detail', [TrxAnggaranHeaderController::class, 'add_trx_anggaran_detail'])->name('trx-anggaran.add');
     Route::get('delete-trx-anggaran-detail/{id}', [TrxAnggaranDetailController::class, 'delete'])->name('trx-anggaran-detail.delete');
 

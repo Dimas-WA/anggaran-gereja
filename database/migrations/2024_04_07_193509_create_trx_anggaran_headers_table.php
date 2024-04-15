@@ -23,6 +23,11 @@ return new class extends Migration
             $table->string('original_file')->nullable();
             $table->enum('status', ['draft', 'send', 'waiting-approval', 'on-process', 'rejected', 'finish'])->default('draft');
             $table->double('total_pengajuan', 15,2)->default(0.00);
+            $table->integer('position')->default(0);
+            $table->string('next_position')->default('user_id_app_2');
+            $table->enum('status_realisasi', ['none', 'draft', 'send', 'waiting-approval', 'on-process', 'rejected', 'finish'])->default('none');
+            $table->integer('position_realisasi')->default(0);
+            $table->string('next_position_realisasi')->default('user_id_app_2');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

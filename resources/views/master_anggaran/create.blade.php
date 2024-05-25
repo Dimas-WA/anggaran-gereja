@@ -60,17 +60,29 @@
                     </div>
                 </div>
             </div>
-
-            {{-- <div class="row">
-
-                <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12">
                     <div class="form-group">
-                        <label>Tanggal Lahir</label>
-                        <input type="text" class="form-control inputdate" id="date" name="tanggal_lahir" placeholder="Tanggal Lahir" required value="{{ old('tanggal_lahir') }}">
+                        <label>Pilih Seksi*</label>
+                        <select class="form-control" name="seksi_id">
+                            <option value="0">Pilih Seksi</option>
+                            @foreach ($seksis as $seksi)
+                                <option value="{{ $seksi->id }}"">{{ $seksi->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
+            </div>
 
-            </div> --}}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Tahun Anggaran*</label>
+                        <input type="text" class="form-control" value="{{ $tahun->tahun }}" disabled>
+                        <input type="hidden" class="form-control" name="tahun" value="{{ $tahun->id }}" required>
+                    </div>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-sm-6">

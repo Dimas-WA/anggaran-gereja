@@ -66,7 +66,7 @@ th, td { white-space: nowrap; }
 
 
 {{-- @if ($trx_anggaran->user_id == auth()->user()->id && $trx_anggaran->status == 'draft') --}}
-@if ($trx_anggaran->user_id == auth()->user()->id && $trx_anggaran->status_realisasi == 'draft'))
+@if ($trx_anggaran->user_id == auth()->user()->id && $trx_anggaran->status_realisasi == 'none'))
 
 <div class="row">
     <div class="col-md-12">

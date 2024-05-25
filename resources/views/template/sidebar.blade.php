@@ -68,6 +68,23 @@
             @if (auth()->user()->type == 'user')
             <li class="nav-header">Transaksi</li>
 
+            <li class="nav-item @if (Route::currentRouteName() == 'master-anggaran.create' || Route::currentRouteName() == 'master-anggaran.index' || Route::currentRouteName() == 'master-anggaran.index') menu-open @endif">
+                <a href="#" class="nav-link @if (Route::currentRouteName() == 'master-anggaran.create' || Route::currentRouteName() == 'master-anggaran.index') active @endif">
+                  <i class="nav-icon fas fa-money-check-alt text-warning"></i>
+                  <p>
+                    Master Anggaran
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ route('master-anggaran.index') }}" class="nav-link @if (Route::currentRouteName() == 'master-anggaran.index') active @endif">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>View</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
             <li class="nav-item @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'trx-anggaran.req' || Route::currentRouteName() == 'trx-anggaran-realisasi.req') menu-open @endif">
                 <a href="#" class="nav-link @if (Route::currentRouteName() == 'trx-anggaran.create' || Route::currentRouteName() == 'trx-anggaran.index' || Route::currentRouteName() == 'trx-anggaran.req' || Route::currentRouteName() == 'trx-anggaran-realisasi.req') active @endif">
                   <i class="nav-icon fa fa-shopping-bag text-warning"></i>
@@ -112,7 +129,7 @@
         @if (auth()->user()->type == 'admin')
           <li class="nav-header">Admin</li>
           <li class="nav-item @if (Route::currentRouteName() == 'master-anggaran.create' || Route::currentRouteName() == 'master-anggaran.index' || Route::currentRouteName() == 'master-anggaran.index') menu-open @endif">
-            <a href="#" class="nav-link @if (Route::currentRouteName() == 'master-anggaran.create' || Route::currentRouteName() == 'master-anggaran.index' || Route::currentRouteName() == 'seksi.index') active @endif">
+            <a href="#" class="nav-link @if (Route::currentRouteName() == 'master-anggaran.create' || Route::currentRouteName() == 'master-anggaran.index') active @endif">
               <i class="nav-icon fas fa-money-check-alt text-warning"></i>
               <p>
                 Master Anggaran
@@ -135,7 +152,7 @@
             </ul>
           </li>
           <li class="nav-item @if (Route::currentRouteName() == 'tahun-anggaran.create' || Route::currentRouteName() == 'tahun-anggaran.index' || Route::currentRouteName() == 'tahun-anggaran.index') menu-open @endif">
-            <a href="#" class="nav-link @if (Route::currentRouteName() == 'tahun-anggaran.create' || Route::currentRouteName() == 'tahun-anggaran.index' || Route::currentRouteName() == 'seksi.index') active @endif">
+            <a href="#" class="nav-link @if (Route::currentRouteName() == 'tahun-anggaran.create' || Route::currentRouteName() == 'tahun-anggaran.index') active @endif">
               <i class="nav-icon fas fa-money-check-alt text-warning"></i>
               <p>
                 Tahun Anggaran

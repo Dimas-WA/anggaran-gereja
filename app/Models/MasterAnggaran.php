@@ -14,4 +14,12 @@ class MasterAnggaran extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function seksi()
+    {
+        return $this->belongsTo(Seksi::class);
+    }
+    public function tahun_anggaran()
+    {
+        return $this->belongsTo(TahunAnggaran::class);
+    }
 }

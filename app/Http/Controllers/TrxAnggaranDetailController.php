@@ -87,7 +87,7 @@ class TrxAnggaranDetailController extends Controller
     }
     public function delete (Request $request)
     {
-        // dd($request->id);
+
         $vH=TrxAnggaranDetail::find($request->id);
 
         // dd($vH->trx_anggaran_header_id);

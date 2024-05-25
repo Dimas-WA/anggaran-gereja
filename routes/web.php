@@ -63,7 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('seksi', SeksiController::class);
 
     Route::resource('tahun-anggaran', TahunAnggaranController::class);
+
     Route::resource('master-anggaran', MasterAnggaranController::class);
+    Route::get('delete-master-anggaran/{id}', [MasterAnggaranController::class, 'delete'])->name('master-anggaran.delete');
+
     Route::resource('trx-anggaran', TrxAnggaranHeaderController::class);
     Route::get('trx-anggaran-request', [TrxAnggaranHeaderController::class, 'request_app'])->name('trx-anggaran.req');
 

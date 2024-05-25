@@ -31,11 +31,11 @@
 
 
 @section('content-title')
-    <h1 class="m-0">Create Seksi</h1>
+    <h1 class="m-0">Detail Master Anggaran</h1>
 @endsection
 
 @section('content-breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('master-anggaran.index') }}">Seksi</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('master-anggaran.index') }}">Master Anggaran</a></li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
 
@@ -57,13 +57,30 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Nama Anggaran*</label>
-                        <input type="text" class="form-control" name="name" placeholder="Seksi Name" value="{{ $anggaran->name }}" required>
+                        <input type="text" class="form-control" name="name" placeholder="Seksi Name" value="{{ $anggaran->name }}"
+                        @if (auth()->user()->type == 'user') disabled @else required @endif>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Nama Seksi*</label>
+                        <input type="text" class="form-control" value="{{ $anggaran->seksi->name }}" disabled>
+                        <input type="hidden" class="form-control" name="seksi_id" value="{{ $anggaran->seksi_id }}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Tahun Anggaran*</label>
+                        <input type="text" class="form-control" value="{{ $anggaran->tahun_anggaran->tahun }}" disabled>
+                        <input type="hidden" class="form-control" name="tahun" value="{{ $anggaran->tahun_anggaran_id }}" required>
                     </div>
                 </div>
                 <div class="col-sm-6">
                 <div class="form-group">
                     <label>Status</label>
-                    <select class="form-control" name="status">
+                    <select class="form-control" name="status" @if (auth()->user()->type == 'user') disabled @else required @endif>
                         <option disabled>Choose Status</option>
                         <option value="1" {{ $anggaran->status == 1 ? 'selected' : '' }} style="background-color: #339a74; color: white;">Aktif</option>
                         <option value="0" {{ $anggaran->status == 0 ? 'selected' : '' }} style="background-color: #9a3333; color: white;">Tidak Aktif</option>
@@ -72,25 +89,28 @@
                 </div>
             </div>
 
-
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Saldo Awal*</label>
-                        <input type="text" class="form-control" name="sawal" placeholder="Saldo Awal" value="{{ $anggaran->saldo_awal }}" required>
+                        <input type="text" class="form-control" name="sawal" placeholder="Saldo Awal" value="{{ $anggaran->saldo_awal }}" @if (auth()->user()->type == 'user') disabled @else required @endif>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Saldo Akhir*</label>
-                        <input type="text" class="form-control" name="sakir" placeholder="Saldo Akhir" value="{{ $anggaran->saldo_akhir }}" required>
+                        <input type="text" class="form-control" name="sakir" placeholder="Saldo Akhir" value="{{ $anggaran->saldo_akhir }}" @if (auth()->user()->type == 'user') disabled @else required @endif>
                     </div>
                 </div>
             </div>
 
 
             <div class="card-footer">
+                @if (auth()->user()->type == 'user')
+                <a href="{{ route('master-anggaran.index') }}" class="btn btn-info">Back</a>
+                @else
                 <button type="submit" class="btn btn-primary">Update</button>
+                @endif
             </div>
             </form>
         </div>

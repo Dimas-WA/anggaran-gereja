@@ -5,11 +5,11 @@
 @endsection
 
 @section('content-title')
-    <h1 class="m-0">All Users</h1>
+    <h1 class="m-0">All Master Anggaran</h1>
 @endsection
 
 @section('content-breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('seksi.index') }}">Seksis</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('master-anggaran.index') }}">Master Anggaran</a></li>
     <li class="breadcrumb-item active">View</li>
 @endsection
 
@@ -17,16 +17,15 @@
 <div class="row">
     <div class="col-12">
       <div class="card">
-        {{-- <div class="card-header"> --}}
-          {{-- <h5 class="m-0">Featured</h5> --}}
-          {{-- <a class="btn btn-primary btn" href="{{ route('seksi.create') }}" id="submit-btn" style="background-color: #069fdb; border-color: #069fdb;"><i class="fas fa-plus"></i> Add New</a> --}}
-        {{-- </div> --}}
         <div class="card-body table-responsive p-4">
-            <table id="example1" class="table table-striped table-hover dataTable no-footer dtr-inline">
+            <table id="example2" class="table table-striped table-hover dataTable no-footer dtr-inline">
               <thead>
                   <tr>
                       <th>#</th>
                       <th>Name</th>
+                      @if (auth()->user()->type == 'user')
+                      <th>Saldo Akhir</th>
+                      @endif
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -42,6 +41,11 @@
                               <td>
                                   {{$seksi->name}}
                               </td>
+                              @if (auth()->user()->type == 'user')
+                              <td>
+                                  {{number_format($seksi->saldo_akhir,2)}}
+                              </td>
+                              @endif
                               <td>
                                 @if ($seksi->status == 1)
                                     <span class="badge badge" style="background-color: #339a74; color: white;">
@@ -56,6 +60,9 @@
                               </td>
                                 <td>
                                     <a class="btn btn-warning btn-xs text-white" href="{{ route('master-anggaran.show', $seksi->id) }}" id="submit-btn" style="background-color: #069fdb; border-color: #069fdb;"><i class="fas fa-search"></i> Review</a>
+                                    @if (auth()->user()->type == 'admin')
+                                        <a class="btn btn-danger btn-xs text-white" href="{{ route('master-anggaran.delete', $seksi->id) }}"><i class="fas fa-trash"></i> Delete</a>
+                                    @endif
                                 </td>
                           </tr>
 
@@ -89,13 +96,7 @@
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
       $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
+        "scrollX": true,
       });
     });
   </script>

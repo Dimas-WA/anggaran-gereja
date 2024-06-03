@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class LoginController extends Controller
 {
@@ -141,12 +146,12 @@ class LoginController extends Controller
             ]);
             $cekUser->save();
 
-            $saveLog = new LogApp([
-                'user_id' => $cekUser->id,
-                'module' => 'Reset Password',
-                'description' => 'User melakukan reset password ke email yang terdaftar'
-            ]);
-            $saveLog->save();
+            // $saveLog = new LogApp([
+            //     'user_id' => $cekUser->id,
+            //     'module' => 'Reset Password',
+            //     'description' => 'User melakukan reset password ke email yang terdaftar'
+            // ]);
+            // $saveLog->save();
             //email user
 
             $subject = 'AAUI APP Reset User Password';

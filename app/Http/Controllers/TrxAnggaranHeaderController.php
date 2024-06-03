@@ -138,10 +138,8 @@ class TrxAnggaranHeaderController extends Controller
 
         //set status masih perlu app atau tidak
 
-
-
         return view('permintaan_anggaran.detail')
-        ->with('anggarans', MasterAnggaran::all())
+        ->with('anggarans', MasterAnggaran::where('seksi_id',auth()->user()->profile->seksi_id)->get())
         // ->with('anggaran_details', TrxAnggaranDetail::where('trx_anggaran_header'))
         ->with('trx_anggaran', $trx_anggaran);
     }

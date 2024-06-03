@@ -2,20 +2,10 @@
 @section('custom-css')
 
 
+<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/summernote/summernote-bs4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/calendar_pick.css') }}">
 
-<style>
-/* Ensure that the demo table scrolls */
-th, td { white-space: nowrap; }
-    div.dataTables_wrapper {
-        margin: 0 auto;
-    }
-
-    div.container {
-        width: 80%;
-    }
-    </style>
 @endsection
 @section('content-title')
     <h1 class="m-0 text-danger">Detail Permintaan Anggaran</h1>
@@ -94,7 +84,7 @@ th, td { white-space: nowrap; }
                         <select class="form-control" name="anggaran_id">
                             <option value="0">Pilih Anggaran</option>
                             @foreach ($anggarans as $anggaran)
-                                <option value="{{ $anggaran->id }}"">{{ $anggaran->name }}</option>
+                                <option value="{{ $anggaran->id }}"">{{ $anggaran->name }} || Saldo : {{ number_format($anggaran->saldo_akhir,0) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -133,18 +123,18 @@ th, td { white-space: nowrap; }
 <div class="row">
 
     <div class="col-12">
-        <div class="invoice p-3 mb-3">
-            <div class="row">
+        <div class="card">
+            {{-- <div class="row">
                 <div class="col-12">
                     <h4>
                     <i class="fas fa-file-alt"></i> Rincian Permintaan Anggaran
                     </h4>
                 </div>
-            </div>
+            </div> --}}
 
 
             <div class="card-body table-responsive p-4">
-                <table id="example1" class="table table-striped table-hover dataTable no-footer dtr-inline">
+                <table id="example2" class="table table-striped table-hover dataTable no-footer dtr-inline" style="width:100%;">
                   <thead>
                       <tr>
                           <th>#</th>
@@ -182,7 +172,7 @@ th, td { white-space: nowrap; }
                               @endforeach
                           @else
                               <tr>
-                                  <td colspan="3">data masih kosong</td>
+                                  <td colspan="5">data masih kosong</td>
                               </tr>
                           @endif
                       </tbody>
@@ -270,6 +260,13 @@ th, td { white-space: nowrap; }
 <script src="{{ asset('AdminLTE/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('AdminLTE/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
+<script>
+    $(function () {
+      $('#example2').DataTable({
+        "scrollX": true,
+      });
+    });
+  </script>
 <script type="text/javascript">
     $('#summernoteFilm').summernote({
         height: 200,
